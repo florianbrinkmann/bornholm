@@ -5,3 +5,4 @@ In diesem Repository werden die Dateien der Artikelreihe über die Erstellung ei
 Teile der Reihe:
 
 1. http://t3n.de/news/grosse-guide-wordpress-theme-555618/
+2. http://t3n.de/news/grosse-t3n-guide-eigenen-wordpress-theme-das-grundgeruest-555808/
