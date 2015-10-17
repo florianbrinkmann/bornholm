@@ -10,3 +10,4 @@ Teile der Reihe:
 4. http://t3n.de/news/wordpress-theme-erstellen-index-php-637682/
 5. http://t3n.de/news/wordpress-theme-erstellen-content-php-643761/
 6. http://t3n.de/news/wordpress-theme-uebersetzen-645450/
+7. http://t3n.de/news/wordpress-theme-erstellen-sidebar-und-footer-648235/
