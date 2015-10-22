@@ -1,4 +1,79 @@
 <?php
+/**
+ * Adds theme support for custom header, feed links, title tag, post formats, HTML5 and post thumbnails
+ */
+function bornholm_add_theme_support() {
+	add_theme_support( 'custom-header' );
+	add_theme_support( 'automatic-feed-links' );
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'post-formats', array(
+		'aside',
+		'link',
+		'gallery',
+		'status',
+		'quote',
+		'image',
+		'video',
+		'audio',
+		'chat'
+	) );
+	add_theme_support( 'html5', array(
+		'comment-list',
+		'comment-form',
+		'search-form',
+		'gallery',
+		'caption',
+	) );
+	add_theme_support( 'post-thumbnails' );
+}
+
+add_action( 'after_setup_theme', 'bornholm_add_theme_support' );
+
+/**
+ * Registers the menu
+ */
+function bornholm_menus() {
+	register_nav_menus( array(
+		'header-menu' => __( 'Header Menu', 'bornholm' ),
+	) );
+}
+
+add_action( 'init', 'bornholm_menus' );
+
+/**
+ * Registers the sidebar
+ */
+function bornholm_sidebars() {
+	register_sidebar( array(
+		'name'          => 'Sidebar',
+		'id'            => 'sidebar-1',
+		'description'   => '',
+		'before_widget' => '<div class="widget clearfix %2$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '<h3 class="widget-title">',
+		'after_title'   => '</h3>'
+	) );
+	register_sidebar( array(
+		'name'          => __( 'Footer Widget Area (top)', 'bornholm' ),
+		'id'            => 'footer-widget-area-top',
+		'description'   => __( 'This widget area is shown on the top of the footer', 'bornholm' ),
+		'before_widget' => '<div class="widget %2$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '<h3 class="widget-title">',
+		'after_title'   => '</h3>'
+	) );
+	register_sidebar( array(
+		'name'          => __( 'Footer Widget Area (bottom)', 'bornholm' ),
+		'id'            => 'footer-widget-area-bottom',
+		'description'   => __( 'This widget area is shown on the bottom of the footer', 'bornholm' ),
+		'before_widget' => '<div class="widget %2$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '<h3 class="widget-title">',
+		'after_title'   => '</h3>'
+	) );
+}
+
+add_action( 'widgets_init', 'bornholm_sidebars' );
 
 /**
  * Displays the content with customized more link
