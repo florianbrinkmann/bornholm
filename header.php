@@ -33,7 +33,7 @@
 		<?php wp_nav_menu( array(
 			'theme_location' => 'header-menu',
 			'container'      => '',
-			'fallback_cb'    => false
+			'fallback_cb'    => '__return_false'
 		) ); ?>
 		<button class="hide-menu menu-button">×</button>
 	</nav>
