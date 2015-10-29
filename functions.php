@@ -1,4 +1,6 @@
 <?php
+
+add_image_size( 'bornholm_large_gallery_image_for_single_view', 1592, 9999, false );
 /**
  * Adds theme support for custom header, feed links, title tag, post formats, HTML5 and post thumbnails
  */
@@ -76,6 +78,20 @@ function bornholm_sidebars() {
 add_action( 'widgets_init', 'bornholm_sidebars' );
 
 /**
+ * Displays navigation for paginated posts
+ *
+ * @return string Formatted output in HTML.
+ */
+function bornholm_paginated_posts_navigation() {
+	wp_link_pages( array(
+		'before'      => '<ul class="page-link">',
+		'after'       => '</ul>',
+		'link_before' => '<li>',
+		'link_after'  => '</li>',
+	) );
+}
+
+/**
  * Displays the content with customized more link
  *
  * @return string Formatted output in HTML
@@ -84,6 +100,65 @@ function bornholm_the_content() {
 	$text = _x( 'Continue reading “%s”', 's = post title', 'bornholm' );
 	$more = sprintf( $text, esc_html( get_the_title() ) );
 	the_content( $more );
+}
+
+/**
+ * Fetch image post objects for all gallery images in a post.
+ *
+ * @param $post_id
+ *
+ * @return array
+ */
+function bornholm_get_gallery_images( $post_id ) {
+
+	$post = get_post( $post_id );
+
+	// Den Beitrag gibt es nicht, oder er ist leer.
+	if ( ! $post || empty ( $post->post_content ) ) {
+		return array();
+	}
+
+	$galleries = get_post_galleries( $post, false );
+	if ( empty ( $galleries ) ) {
+		return array();
+	}
+	$ids = array();
+	foreach ( $galleries as $gallery ) {
+		if ( ! empty ( $gallery['ids'] ) ) {
+			$ids = array_merge( $ids, explode( ',', $gallery['ids'] ) );
+		}
+	}
+	$ids = array_unique( $ids );
+	if ( empty ( $ids ) ) {
+		$attachments = get_children( array(
+			'post_parent'    => $post_id,
+			'post_status'    => 'inherit',
+			'post_type'      => 'attachment',
+			'post_mime_type' => 'image',
+			'order'          => 'ASC',
+			'orderby'        => 'menu_order',
+		) );
+		if ( empty ( $attachments ) ) {
+			return array();
+		}
+	}
+
+	$images = get_posts(
+		array(
+			'post_type'      => 'attachment',
+			'post_mime_type' => 'image',
+			'orderby'        => 'post__in',
+			'numberposts'    => 999,
+			'include'        => $ids
+		)
+	);
+	if ( ! $images && ! $attachments ) {
+		return array();
+	} elseif ( ! $images ) {
+		$images = $attachments;
+	}
+
+	return $images;
 }
 
 /**
@@ -130,6 +205,65 @@ function bornholm_post_title( $heading, $post ) {
 		</a>
 	<?php }
 	echo '</' . $heading . '>';
+}
+
+/**
+ * Displays the header of a gallery.
+ * If there are $images, the function displays the title with an image.
+ * If not, only the title is displayed.
+ *
+ * @param $heading , $images, $size
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_gallery_header( $heading, $images, $size, $post ) {
+	if ( $images ) {
+		bornholm_gallery_title( $heading, $images, $size, $post );
+	} else {
+		bornholm_post_title( $heading, $post );
+	}
+}
+
+/**
+ * Displays the title of a gallery with an image.
+ *
+ * @param $heading , $images, $size
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_gallery_title( $heading, $images, $size, $post ) {
+	if ( $size != 'bornholm_large_gallery_image_for_single_view' ) { ?>
+		<a href="<?php echo esc_url( get_permalink( $post->ID ) ); ?>">
+	<?php }
+	if ( ! $heading == '' ) {
+		echo '<' . $heading . ' class="entry-title gallery-title">';
+		echo esc_html( $post->post_title );
+		echo '</' . $heading . '>';
+	}
+	bornholm_gallery_featured_image( $size, $images, $post );
+	if ( $size != 'bornholm_large_gallery_image_for_single_view' ) { ?>
+		</a>
+	<?php }
+}
+
+/**
+ * Displays the featured image of a gallery
+ *
+ * @param $size , $images
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_gallery_featured_image( $size, $images, $post ) {
+	$image         = array_shift( $images );
+	$image_img_tag = wp_get_attachment_image( $image->ID, $size ); ?>
+	<figure class="gallery-thumb clearfix">
+		<?php if ( has_post_thumbnail( $post->ID ) ) {
+			echo get_the_post_thumbnail( $post->ID, $size );
+		} else {
+			echo $image_img_tag;
+		} ?>
+	</figure>
+	<?php
 }
 
 /**
