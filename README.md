@@ -12,3 +12,4 @@ Teile der Reihe:
 6. http://t3n.de/news/wordpress-theme-uebersetzen-645450/
 7. http://t3n.de/news/wordpress-theme-erstellen-sidebar-und-footer-648235/
 8. http://t3n.de/news/wordpress-theme-menue-und-sidebar-registrieren-650162/
+9. http://t3n.de/news/wordpress-theme-einzelansicht-single-php-651782/
