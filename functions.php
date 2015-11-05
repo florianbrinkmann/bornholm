@@ -56,6 +56,15 @@ function bornholm_sidebars() {
 		'after_title'   => '</h3>'
 	) );
 	register_sidebar( array(
+        'name'          => __( 'Gallery Sidebar', 'bornholm' ),
+        'id'            => 'sidebar-gallery',
+        'description'   => __( 'This sidebar is shown on single gallery pages', 'bornholm' ),
+        'before_widget' => '<div class="widget clearfix %2$s">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h3 class="widget-title">',
+        'after_title'   => '</h3>'
+    ) );
+	register_sidebar( array(
 		'name'          => __( 'Footer Widget Area (top)', 'bornholm' ),
 		'id'            => 'footer-widget-area-top',
 		'description'   => __( 'This widget area is shown on the top of the footer', 'bornholm' ),
@@ -264,6 +273,132 @@ function bornholm_gallery_featured_image( $size, $images, $post ) {
 		} ?>
 	</figure>
 	<?php
+}
+
+/**
+ * Displays the “Display all” link, if there are too many galleries in one category
+ *
+ * @param $cat
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_alternative_front_page_more_link( $cat ) {
+    $text = _x( 'Display all galleries from “%s”', 's = category title', 'bornholm' );
+    $more = sprintf( $text, esc_html( $cat->name ) ); ?>
+    <article class="read-more">
+        <a href="<?php echo esc_url( get_category_link( $cat->cat_ID ) ) ?>"><?php echo $more ?></a>
+    </article>
+<?php }
+
+/**
+ * Displays a thumbnail from a gallery
+ *
+ * @param $post
+ */
+function bornholm_alternative_front_page_gallery_teaser ( $post ) { ?>
+    <article>
+        <?php $images_child = bornholm_get_gallery_images( $post->ID );
+            bornholm_gallery_header( 'h3', $images_child, 'thumbnail', $post );
+        ?>
+    </article>
+<?php }
+
+/**
+ * Returns a comma seperated string of category ids of the given post
+ *
+ * @param $post_id
+ *
+ * @return string
+ */
+function bornholm_get_the_category_ids( $post_id ) {
+	$category_ids = get_the_category( $post_id );
+	$counter      = 0;
+	foreach ( $category_ids as $category_id ) {
+		if ( $counter == 0 ) {
+			$category_ids = $category_id->cat_ID;
+		} else {
+			$category_ids .= ", $category_id->cat_ID";
+		}
+		$counter ++;
+	}
+
+	return $category_ids;
+}
+
+/**
+ * Returns array with galleries (post format gallery) from given category
+ *
+ * @param $cat, $exclude_id
+ *
+ * @return array
+ */
+function bornholm_galleries_args( $cat, $exclude_id ){
+    $args = array(
+        'category__in' => $cat->cat_ID,
+        'exclude'       => "$exclude_id", // for the sidebar on a single gallery
+        'tax_query'    => array(
+            'relation' => 'AND',
+            array(
+                'taxonomy' => 'category',
+                'field'    => 'slug',
+                'terms'    => $cat->slug
+            ),
+            array(
+                'taxonomy' => 'post_format',
+                'field'    => 'slug',
+                'terms'    => 'post-format-gallery'
+            )
+        )
+    );
+    return $args;
+}
+
+/**
+ * Displays the galleries from one category
+ *
+ * @param $cat, $exclude_id ,$number_of_galleries, $heading, $title, $show_child_category_hierarchy
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_get_galleries_from_category ( $cat, $exclude_id, $number_of_galleries, $heading, $title, $show_child_category_hierarchy ) {
+    $galleries_args = bornholm_galleries_args( $cat, $exclude_id );
+    $galleries      = get_posts( $galleries_args );
+    if ( $galleries ) {
+        $total_galleries = count( $galleries );
+        $gallery_counter = 0; ?>
+        <div class="gallery-category clearfix">
+            <?php if ( $title != '' ) { ?>
+                <<?php echo $heading; ?> class="category-title"><?php echo $title; ?></<?php echo $heading; ?>>
+            <?php } ?>
+            <?php bornholm_loop_galleries_from_category( $galleries, $total_galleries, $number_of_galleries, $gallery_counter, $cat );
+            if ( $show_child_category_hierarchy ) {
+                bornholm_get_child_category_galleries( $cat, $number_of_galleries, $exclude_id, $title, $heading );
+            }?>
+        </div>
+    <?php }
+}
+
+/**
+ * Loops through the galleries of the given category and calls the functions for displaying the teaser
+ * of the galleries and the “Display all” link
+ *
+ * @param $galleries, $total_galleries, $number_of_galleries, $gallery_counter, $cat
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_loop_galleries_from_category( $galleries, $total_galleries, $number_of_galleries, $gallery_counter, $cat ) {
+    foreach ( $galleries as $post ) {
+        if ( $number_of_galleries > 0 ) {
+            if ( $total_galleries > $number_of_galleries ) {
+                $gallery_counter ++;
+                if ( $gallery_counter > $number_of_galleries ) {
+                    bornholm_alternative_front_page_more_link( $cat );
+                    break;
+                }
+            }
+        }
+        bornholm_alternative_front_page_gallery_teaser( $post );
+    }
 }
 
 /**
