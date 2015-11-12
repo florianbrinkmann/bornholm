@@ -492,6 +492,71 @@ function bornholm_show_seperator( $show_sep ) {
 }
 
 /**
+ * Template for comments and pingbacks.
+ *
+ * To override this walker in a child theme without modifying the comments template
+ * simply create your own bornholm_comment(), and that function will be used instead.
+ *
+ * Used as a callback by wp_list_comments() for displaying the comments.
+ */
+function bornholm_comment( $comment, $args, $depth ) {
+	$GLOBALS['comment'] = $comment;
+	switch ( $comment->comment_type ) :
+		case 'pingback' :
+		case 'trackback' :
+			// Display trackbacks differently than normal comments.
+			?>
+			<li <?php comment_class(); ?> id="comment-<?php comment_ID(); ?>">
+			<p><?php _e( 'Trackback:', 'bornholm' ); ?> <?php esc_url( comment_author_link() ); ?><?php esc_url( edit_comment_link( __( '(Edit)', 'bornholm' ), '<span class="edit-link">', '</span>' ) ); ?></p>
+			<?php
+			break;
+		default :
+			// Proceed with normal comments.
+			global $post;
+			?>
+		<li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>">
+			<article id="comment-<?php comment_ID(); ?>" class="comment">
+				<header class="comment-meta comment-author vcard clearfix">
+					<?php
+					echo get_avatar( $comment, 100 ); ?>
+					<cite class="fn">
+						<?php esc_url( comment_author_link() ); ?>
+					</cite>
+
+					<?php printf( '<a href="%1$s"><time datetime="%2$s">%3$s</time></a>',
+						esc_url( get_comment_link( $comment->comment_ID ) ),
+						get_comment_time( 'c' ),
+						sprintf( _x( '%1$s @ %2$s', '1=date 2=time', 'bornholm' ), get_comment_date(), get_comment_time() )
+					); ?>
+				</header>
+
+				<?php if ( '0' == $comment->comment_approved ) { ?>
+					<p class="comment-awaiting-moderation">
+						<?php _e( 'Your comment is awaiting moderation.', 'bornholm' ); ?>
+					</p>
+				<?php } ?>
+
+				<section class="comment-content comment">
+					<?php comment_text(); ?>
+					<?php esc_url( edit_comment_link( __( 'Edit', 'bornholm' ), '<p class="edit-link">', '</p>' ) ); ?>
+				</section>
+
+				<div class="reply">
+					<?php esc_url( comment_reply_link(
+						array(
+							'reply_text' => __( 'Reply', 'bornholm' ),
+							'depth'      => $depth,
+							'max_depth'  => $args['max_depth']
+						)
+					) ); ?>
+				</div>
+			</article>
+			<?php
+			break;
+	endswitch; // end comment_type check
+}
+
+/**
  * Returns the number of comments for a post
  *
  * @return string
