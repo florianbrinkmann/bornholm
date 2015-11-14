@@ -14,3 +14,4 @@ Teile der Reihe:
 8. http://t3n.de/news/wordpress-theme-menue-und-sidebar-registrieren-650162/
 9. http://t3n.de/news/wordpress-theme-einzelansicht-single-php-651782/
 10. http://t3n.de/news/eigene-wordpress-theme-erstellen-653702/
+11. http://t3n.de/news/eigene-wordpress-theme-erstellen-2-655718/
