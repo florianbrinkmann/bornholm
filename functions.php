@@ -1,6 +1,7 @@
 <?php
 
 add_image_size( 'bornholm_large_gallery_image_for_single_view', 1592, 9999, false );
+add_image_size( 'bornholm_large_gallery_image_for_blog_view', 951, 9999, false );
 /**
  * Adds theme support for custom header, feed links, title tag, post formats, HTML5 and post thumbnails
  */
@@ -273,6 +274,99 @@ function bornholm_gallery_featured_image( $size, $images, $post ) {
 		} ?>
 	</figure>
 	<?php
+}
+
+/**
+ * Displays the first images of a gallery
+ *
+ * @param $size, $images, $number_of_small_images
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_small_gallery_thumbnails( $size, $images, $number_of_small_images ) {
+    global $post;
+    if ( $images ) {
+        $counter = 0;
+        if ( has_post_thumbnail() ) {
+	        bornholm_thumbnails_from_gallery_with_post_thumbnail( $post, $images, $counter, $size, $number_of_small_images );
+        } else {
+	        bornholm_thumbnails_from_gallery_without_post_thumbnail( $images, $counter, $size, $number_of_small_images );
+        }
+    }
+}
+
+/**
+ * Displays the first images from the gallery when a post thumbnail is set without displaying the
+ * thumbnail for a second time
+ *
+ * @param $post, $small_images, $counter, $size, $number_of_small_images
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_thumbnails_from_gallery_with_post_thumbnail( $post, $small_images, $counter, $size, $number_of_small_images ) {
+	$post_thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ) );
+	$image_list     = '<ul class="gallery-thumbs clearfix">';
+	foreach ( $small_images as $single_image ) {
+		$single_image_url = wp_get_attachment_image_src( $single_image->ID );
+		if ( $counter >= $number_of_small_images ) {
+			break;
+		}
+		if ( $post_thumbnail[0] == $single_image_url[0] ) {
+			continue;
+		}
+		$image_list .= '<li>' . wp_get_attachment_image( $single_image->ID, $size ) . '</li>';
+		$counter ++;
+	}
+	$image_list .= '</ul>';
+	echo $image_list;
+}
+
+/**
+ * Displays the first images from the gallery
+ *
+ * @param $small_images, $counter, $size, $number_of_small_images
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_thumbnails_from_gallery_without_post_thumbnail( $small_images, $counter, $size, $number_of_small_images ) {
+	$image_list     = '<ul class="gallery-thumbs clearfix">';
+	foreach ( $small_images as $single_image ) {
+		if ( $counter == 0 ) {
+			$counter ++;
+			continue;
+		}
+		if ( $counter > $number_of_small_images ) {
+			break;
+		}
+		$image_list .= '<li>' . wp_get_attachment_image( $single_image->ID, $size ) . '</li>';
+		$counter ++;
+	}
+	$image_list .= '</ul>';
+	echo $image_list;
+}
+
+/**
+ * Displays the number of gallery images
+ *
+ * @param $images
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_gallery_image_number( $images ) {
+    if ( $images ) {
+        $total_images = count( $images ); ?>
+        <p>
+            <em><?php
+                printf( _n( 'This gallery contains <a %1$s>%2$s photo</a>.',
+                    'This gallery contains <a %1$s>%2$s photos</a>.',
+                    $total_images, 'bornholm' ),
+                    'href="' . esc_url( get_permalink() )
+                    . '"',
+                    number_format_i18n( $total_images ) );
+                ?>
+            </em>
+        </p>
+    <?php }
 }
 
 /**
