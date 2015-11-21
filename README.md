@@ -15,3 +15,4 @@ Teile der Reihe:
 9. http://t3n.de/news/wordpress-theme-einzelansicht-single-php-651782/
 10. http://t3n.de/news/eigene-wordpress-theme-erstellen-653702/
 11. http://t3n.de/news/eigene-wordpress-theme-erstellen-2-655718/
+12. http://t3n.de/news/eigene-wordpress-theme-erstellen-content-gallery-655685/
