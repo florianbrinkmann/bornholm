@@ -16,3 +16,4 @@ Teile der Reihe:
 10. http://t3n.de/news/eigene-wordpress-theme-erstellen-653702/
 11. http://t3n.de/news/eigene-wordpress-theme-erstellen-2-655718/
 12. http://t3n.de/news/eigene-wordpress-theme-erstellen-content-gallery-655685/
+13. http://t3n.de/news/eigene-wordpress-theme-erstellen-archiv-ansichten-660354/
