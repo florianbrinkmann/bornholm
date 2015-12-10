@@ -473,6 +473,35 @@ function bornholm_get_galleries_from_category ( $cat, $exclude_id, $number_of_ga
 }
 
 /**
+ * Loops through the child galleries and calls the functions to display them
+ *
+ * @param $cat, $number_of_galleries
+ *
+ * @return string Formatted output in HTML
+ */
+function bornholm_get_child_category_galleries( $cat, $number_of_galleries, $exclude_id, $title, $heading ) {
+	$category_children = get_term_children( $cat->term_id, 'category' );
+	if ( $category_children ) {
+		foreach ( $category_children as $cat_child ) {
+			$cat_child            = get_category( $cat_child );
+			$child_galleries_args = bornholm_galleries_args( $cat_child, $exclude_id );
+			$child_galleries      = get_posts( $child_galleries_args );
+			if ( $child_galleries ) {
+				$total_child_galleries = count( $child_galleries );
+				$gallery_child_counter = 0; ?>
+				<div class="gallery-category child">
+					<?php if ( $title != '' ) {
+						$title = $cat_child->name; ?>
+						<<?php echo $heading; ?>><?php echo $title; ?></<?php echo $heading; ?>>
+					<?php }
+					bornholm_loop_galleries_from_category( $child_galleries, $total_child_galleries, $number_of_galleries, $gallery_child_counter, $cat_child ); ?>
+				</div>
+			<?php }
+		}
+	}
+}
+
+/**
  * Loops through the galleries of the given category and calls the functions for displaying the teaser
  * of the galleries and the “Display all” link
  *
