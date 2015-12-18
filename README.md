@@ -19,3 +19,4 @@ Teile der Reihe:
 13. http://t3n.de/news/eigene-wordpress-theme-erstellen-archiv-ansichten-660354/
 14. http://t3n.de/news/eigene-wordpress-theme-erstellen-seite-404-template-662322/
 15. http://t3n.de/news/eigene-wordpress-theme-erstellen-alternative-startseite-664137/
+16. http://t3n.de/news/eigene-wordpress-theme-erstellen-portfolio-ansicht-666059/
