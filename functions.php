@@ -727,3 +727,16 @@ AND comment_post_ID = %d AND comment_approved = %d", ' ', $the_post_id, 1 ) );
 		return $tb_number;
 	}
 }
+
+require get_template_directory() . '/inc/class-recent-galleries.php';
+
+require get_template_directory() . '/inc/class-featured-galleries.php';
+
+
+function register_bornholm_widgets() {
+	register_widget( 'Bornholm_Recent_Galleries' );
+	register_widget( 'Bornholm_Featured_Galleries' );
+}
+add_action( 'widgets_init', 'register_bornholm_widgets' );
+
+require get_template_directory() . '/inc/customizer.php';
