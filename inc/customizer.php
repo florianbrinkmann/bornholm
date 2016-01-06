@@ -139,6 +139,18 @@ function bornholm_customize_register( $wp_customize ) {
 
 add_action( 'customize_register', 'bornholm_customize_register' );
 
+function bornholm_customize_css() {
+	if ( get_theme_mod( 'header_textcolor' ) ) { ?>
+		<style type="text/css">
+			.site-title a {
+				color: <?php echo '#' . get_theme_mod('header_textcolor'); ?>;
+			}
+		</style>
+	<?php }
+}
+
+add_action( 'wp_head', 'bornholm_customize_css' );
+
 function bornholm_sanitize_checkbox( $checked ) {
 	return ( ( isset( $checked ) && true == $checked ) ? true : false );
 }

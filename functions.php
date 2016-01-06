@@ -392,8 +392,17 @@ function bornholm_alternative_front_page_more_link( $cat ) {
 function bornholm_alternative_front_page_gallery_teaser ( $post ) { ?>
     <article>
         <?php $images_child = bornholm_get_gallery_images( $post->ID );
-            bornholm_gallery_header( 'h3', $images_child, 'thumbnail', $post );
-        ?>
+        $hide_gallery_titles_on_alternative_front_page = get_theme_mod( 'hide_gallery_titles_on_alternative_front_page' );
+        $hide_gallery_titles_for_galleries_from_same_category = get_theme_mod( 'hide_gallery_titles_for_galleries_from_same_category' );
+        $hide_gallery_titles_on_portfolio_page = get_theme_mod( 'hide_gallery_titles_on_portfolio_page' );
+        $page_template = basename( get_page_template( $post->ID ) );
+        if ( ( $hide_gallery_titles_on_alternative_front_page == 1 && $page_template == 'alternative-front-page.php' ) ||
+             ( $hide_gallery_titles_for_galleries_from_same_category == 1 && get_post_format() == 'gallery' && is_single() ) ||
+             $hide_gallery_titles_on_portfolio_page == 1 && $page_template == 'portfolio-page.php' ) {
+	        bornholm_gallery_header( '', $images_child, 'thumbnail', $post );
+        } else {
+	        bornholm_gallery_header( 'h3', $images_child, 'thumbnail', $post );
+        } ?>
     </article>
 <?php }
 

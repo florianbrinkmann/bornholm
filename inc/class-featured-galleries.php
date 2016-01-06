@@ -29,9 +29,14 @@ class Bornholm_Featured_Galleries extends WP_Widget {
 						echo $args['before_title'] . $title . $args['after_title'];
 					}
 				}
-				$images = bornholm_get_gallery_images( $gallery_id ); ?>
+				$images                                           = bornholm_get_gallery_images( $gallery_id );
+				$hide_gallery_titles_on_featured_galleries_widget = get_theme_mod( 'hide_gallery_titles_on_featured_galleries_widget' ); ?>
 				<div>
-					<?php bornholm_gallery_header( 'h4', $images, 'thumbnail', $post ); ?>
+					<?php if ( $hide_gallery_titles_on_featured_galleries_widget == 1 ) {
+						bornholm_gallery_header( '', $images, 'thumbnail', $post );
+					} else {
+						bornholm_gallery_header( 'h4', $images, 'thumbnail', $post );
+					} ?>
 				</div>
 				<?php $counter ++;
 			}

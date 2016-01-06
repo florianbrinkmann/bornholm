@@ -6,7 +6,7 @@
 		?>
 	</header>
 	<?php
-	$number_of_small_images = 2;
+	$number_of_small_images = get_theme_mod( 'number_of_small_images_from_gallery_in_blog_view', 2 );
 	if ( $number_of_small_images > 0 ) {
 		bornholm_small_gallery_thumbnails( 'thumbnail', $images, $number_of_small_images );
 	}

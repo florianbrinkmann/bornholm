@@ -51,9 +51,14 @@ class Bornholm_Recent_Galleries extends WP_Widget {
 				$result->the_post();
 				$post   = get_post( get_the_ID() );
 				$images = bornholm_get_gallery_images( $post->ID );
-				if ( $images ) { ?>
+				if ( $images ) {
+					$hide_gallery_titles_on_recent_galleries_widget = get_theme_mod( 'hide_gallery_titles_on_recent_galleries_widget' ); ?>
 					<div>
-						<?php bornholm_gallery_header( 'h4', $images, 'thumbnail', $post ); ?>
+						<?php if ( $hide_gallery_titles_on_recent_galleries_widget == 1 ) {
+							bornholm_gallery_header( '', $images, 'thumbnail', $post );
+						} else {
+							bornholm_gallery_header( 'h4', $images, 'thumbnail', $post );
+						} ?>
 					</div>
 				<?php }
 			}
