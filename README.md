@@ -22,3 +22,4 @@ Teile der Reihe:
 16. http://t3n.de/news/eigene-wordpress-theme-erstellen-portfolio-ansicht-666059/
 17. http://t3n.de/news/eigene-wordpress-theme-erstellen-theme-widgets-666626/
 18. http://t3n.de/news/eigene-wordpress-theme-erstellen-3-667629/
+19. http://t3n.de/news/eigene-wordpress-theme-erstellen-4-669013/
