@@ -1,7 +1,45 @@
 <?php
 
+update_option( 'thumbnail_size_w', 9999 );
+update_option( 'thumbnail_size_h', 200 );
+update_option( 'thumbnail_crop', 0 );
+update_option( 'large_size_w', 800 );
 add_image_size( 'bornholm_large_gallery_image_for_single_view', 1592, 9999, false );
 add_image_size( 'bornholm_large_gallery_image_for_blog_view', 951, 9999, false );
+
+if ( ! isset( $content_width ) ) {
+	$content_width = 800;
+}
+
+/**
+ * Load the language files
+ */
+function bornholm_load_translation() {
+	if ( ( ! defined( 'DOING_AJAX' ) && ! 'DOING_AJAX' ) || ! bornholm_is_login_page() || ! bornholm_is_wp_comments_post() ) {
+		load_theme_textdomain( 'bornholm' );
+	}
+}
+
+add_action( 'after_setup_theme', 'bornholm_load_translation' );
+
+/**
+ * Check if we are on the login page
+ *
+ * @return bool
+ */
+function bornholm_is_login_page() {
+	return in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) );
+}
+
+/**
+ * Check if we are on the wp-comments-post.pph
+ *
+ * @return bool
+ */
+function bornholm_is_wp_comments_post() {
+	return in_array( $GLOBALS['pagenow'], array( 'wp-comments-post.php' ) );
+}
+
 /**
  * Adds theme support for custom header, feed links, title tag, post formats, HTML5 and post thumbnails
  */
@@ -57,14 +95,14 @@ function bornholm_sidebars() {
 		'after_title'   => '</h3>'
 	) );
 	register_sidebar( array(
-        'name'          => __( 'Gallery Sidebar', 'bornholm' ),
-        'id'            => 'sidebar-gallery',
-        'description'   => __( 'This sidebar is shown on single gallery pages', 'bornholm' ),
-        'before_widget' => '<div class="widget clearfix %2$s">',
-        'after_widget'  => '</div>',
-        'before_title'  => '<h3 class="widget-title">',
-        'after_title'   => '</h3>'
-    ) );
+		'name'          => __( 'Gallery Sidebar', 'bornholm' ),
+		'id'            => 'sidebar-gallery',
+		'description'   => __( 'This sidebar is shown on single gallery pages', 'bornholm' ),
+		'before_widget' => '<div class="widget clearfix %2$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '<h3 class="widget-title">',
+		'after_title'   => '</h3>'
+	) );
 	register_sidebar( array(
 		'name'          => __( 'Footer Widget Area (top)', 'bornholm' ),
 		'id'            => 'footer-widget-area-top',
@@ -111,6 +149,47 @@ function bornholm_the_content() {
 	$more = sprintf( $text, esc_html( get_the_title() ) );
 	the_content( $more );
 }
+
+/**
+ * Removes the page jump after clicking on a read more link
+ *
+ * @param $link
+ *
+ * @return mixed
+ */
+function bornholm_remove_more_link_scroll( $link ) {
+	$link = preg_replace( '|#more-[0-9]+|', '', $link );
+
+	return $link;
+}
+
+add_filter( 'the_content_more_link', 'bornholm_remove_more_link_scroll' );
+
+/**
+ * Adds the scripts and styles to the header
+ */
+function bornholm_scripts_styles() {
+	/*
+	 * Adds JavaScript to pages with the comment form to support
+	 * sites with threaded comments (when in use).
+	 */
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+		wp_enqueue_script( 'comment-reply' );
+	}
+
+
+	wp_enqueue_script( 'bornholm-menu', get_template_directory_uri() . '/js/menu.js', array( 'jquery' ), false, true );
+	wp_enqueue_script( 'bornholm-lightbox', get_template_directory_uri() . '/js/lightbox.js', array( 'jquery' ), false, true );
+
+	/*
+	 * Loads our main stylesheet.
+	 */
+	wp_enqueue_style( 'bornholm-style', get_template_directory_uri() . '/css/bornholm.css', array(), null );
+
+	wp_enqueue_style( 'bornholm-fonts', '//fonts.googleapis.com/css?family=Roboto:300,300italic,500,500italic', array(), null );
+}
+
+add_action( 'wp_enqueue_scripts', 'bornholm_scripts_styles' );
 
 /**
  * Fetch image post objects for all gallery images in a post.
@@ -279,27 +358,27 @@ function bornholm_gallery_featured_image( $size, $images, $post ) {
 /**
  * Displays the first images of a gallery
  *
- * @param $size, $images, $number_of_small_images
+ * @param $size , $images, $number_of_small_images
  *
  * @return string Formatted output in HTML
  */
 function bornholm_small_gallery_thumbnails( $size, $images, $number_of_small_images ) {
-    global $post;
-    if ( $images ) {
-        $counter = 0;
-        if ( has_post_thumbnail() ) {
-	        bornholm_thumbnails_from_gallery_with_post_thumbnail( $post, $images, $counter, $size, $number_of_small_images );
-        } else {
-	        bornholm_thumbnails_from_gallery_without_post_thumbnail( $images, $counter, $size, $number_of_small_images );
-        }
-    }
+	global $post;
+	if ( $images ) {
+		$counter = 0;
+		if ( has_post_thumbnail() ) {
+			bornholm_thumbnails_from_gallery_with_post_thumbnail( $post, $images, $counter, $size, $number_of_small_images );
+		} else {
+			bornholm_thumbnails_from_gallery_without_post_thumbnail( $images, $counter, $size, $number_of_small_images );
+		}
+	}
 }
 
 /**
  * Displays the first images from the gallery when a post thumbnail is set without displaying the
  * thumbnail for a second time
  *
- * @param $post, $small_images, $counter, $size, $number_of_small_images
+ * @param $post , $small_images, $counter, $size, $number_of_small_images
  *
  * @return string Formatted output in HTML
  */
@@ -324,12 +403,12 @@ function bornholm_thumbnails_from_gallery_with_post_thumbnail( $post, $small_ima
 /**
  * Displays the first images from the gallery
  *
- * @param $small_images, $counter, $size, $number_of_small_images
+ * @param $small_images , $counter, $size, $number_of_small_images
  *
  * @return string Formatted output in HTML
  */
 function bornholm_thumbnails_from_gallery_without_post_thumbnail( $small_images, $counter, $size, $number_of_small_images ) {
-	$image_list     = '<ul class="gallery-thumbs clearfix">';
+	$image_list = '<ul class="gallery-thumbs clearfix">';
 	foreach ( $small_images as $single_image ) {
 		if ( $counter == 0 ) {
 			$counter ++;
@@ -353,20 +432,20 @@ function bornholm_thumbnails_from_gallery_without_post_thumbnail( $small_images,
  * @return string Formatted output in HTML
  */
 function bornholm_gallery_image_number( $images ) {
-    if ( $images ) {
-        $total_images = count( $images ); ?>
-        <p>
-            <em><?php
-                printf( _n( 'This gallery contains <a %1$s>%2$s photo</a>.',
-                    'This gallery contains <a %1$s>%2$s photos</a>.',
-                    $total_images, 'bornholm' ),
-                    'href="' . esc_url( get_permalink() )
-                    . '"',
-                    number_format_i18n( $total_images ) );
-                ?>
-            </em>
-        </p>
-    <?php }
+	if ( $images ) {
+		$total_images = count( $images ); ?>
+		<p>
+			<em><?php
+				printf( _n( 'This gallery contains <a %1$s>%2$s photo</a>.',
+					'This gallery contains <a %1$s>%2$s photos</a>.',
+					$total_images, 'bornholm' ),
+					'href="' . esc_url( get_permalink() )
+					. '"',
+					number_format_i18n( $total_images ) );
+				?>
+			</em>
+		</p>
+	<?php }
 }
 
 /**
@@ -377,11 +456,11 @@ function bornholm_gallery_image_number( $images ) {
  * @return string Formatted output in HTML
  */
 function bornholm_alternative_front_page_more_link( $cat ) {
-    $text = _x( 'Display all galleries from “%s”', 's = category title', 'bornholm' );
-    $more = sprintf( $text, esc_html( $cat->name ) ); ?>
-    <article class="read-more">
-        <a href="<?php echo esc_url( get_category_link( $cat->cat_ID ) ) ?>"><?php echo $more ?></a>
-    </article>
+	$text = _x( 'Display all galleries from “%s”', 's = category title', 'bornholm' );
+	$more = sprintf( $text, esc_html( $cat->name ) ); ?>
+	<article class="read-more">
+		<a href="<?php echo esc_url( get_category_link( $cat->cat_ID ) ) ?>"><?php echo $more ?></a>
+	</article>
 <?php }
 
 /**
@@ -389,21 +468,22 @@ function bornholm_alternative_front_page_more_link( $cat ) {
  *
  * @param $post
  */
-function bornholm_alternative_front_page_gallery_teaser ( $post ) { ?>
-    <article>
-        <?php $images_child = bornholm_get_gallery_images( $post->ID );
-        $hide_gallery_titles_on_alternative_front_page = get_theme_mod( 'hide_gallery_titles_on_alternative_front_page' );
-        $hide_gallery_titles_for_galleries_from_same_category = get_theme_mod( 'hide_gallery_titles_for_galleries_from_same_category' );
-        $hide_gallery_titles_on_portfolio_page = get_theme_mod( 'hide_gallery_titles_on_portfolio_page' );
-        $page_template = basename( get_page_template( $post->ID ) );
-        if ( ( $hide_gallery_titles_on_alternative_front_page == 1 && $page_template == 'alternative-front-page.php' ) ||
-             ( $hide_gallery_titles_for_galleries_from_same_category == 1 && get_post_format() == 'gallery' && is_single() ) ||
-             $hide_gallery_titles_on_portfolio_page == 1 && $page_template == 'portfolio-page.php' ) {
-	        bornholm_gallery_header( '', $images_child, 'thumbnail', $post );
-        } else {
-	        bornholm_gallery_header( 'h3', $images_child, 'thumbnail', $post );
-        } ?>
-    </article>
+function bornholm_alternative_front_page_gallery_teaser( $post ) { ?>
+	<article>
+		<?php $images_child                                   = bornholm_get_gallery_images( $post->ID );
+		$hide_gallery_titles_on_alternative_front_page        = get_theme_mod( 'hide_gallery_titles_on_alternative_front_page' );
+		$hide_gallery_titles_for_galleries_from_same_category = get_theme_mod( 'hide_gallery_titles_for_galleries_from_same_category' );
+		$hide_gallery_titles_on_portfolio_page                = get_theme_mod( 'hide_gallery_titles_on_portfolio_page' );
+		$page_template                                        = basename( get_page_template( $post->ID ) );
+		if ( ( $hide_gallery_titles_on_alternative_front_page == 1 && $page_template == 'alternative-front-page.php' ) ||
+		     ( $hide_gallery_titles_for_galleries_from_same_category == 1 && get_post_format() == 'gallery' && is_single() ) ||
+		     $hide_gallery_titles_on_portfolio_page == 1 && $page_template == 'portfolio-page.php'
+		) {
+			bornholm_gallery_header( '', $images_child, 'thumbnail', $post );
+		} else {
+			bornholm_gallery_header( 'h3', $images_child, 'thumbnail', $post );
+		} ?>
+	</article>
 <?php }
 
 /**
@@ -431,60 +511,61 @@ function bornholm_get_the_category_ids( $post_id ) {
 /**
  * Returns array with galleries (post format gallery) from given category
  *
- * @param $cat, $exclude_id
+ * @param $cat , $exclude_id
  *
  * @return array
  */
-function bornholm_galleries_args( $cat, $exclude_id ){
-    $args = array(
-        'category__in' => $cat->cat_ID,
-        'exclude'       => "$exclude_id", // for the sidebar on a single gallery
-        'tax_query'    => array(
-            'relation' => 'AND',
-            array(
-                'taxonomy' => 'category',
-                'field'    => 'slug',
-                'terms'    => $cat->slug
-            ),
-            array(
-                'taxonomy' => 'post_format',
-                'field'    => 'slug',
-                'terms'    => 'post-format-gallery'
-            )
-        )
-    );
-    return $args;
+function bornholm_galleries_args( $cat, $exclude_id ) {
+	$args = array(
+		'category__in' => $cat->cat_ID,
+		'exclude'      => "$exclude_id", // for the sidebar on a single gallery
+		'tax_query'    => array(
+			'relation' => 'AND',
+			array(
+				'taxonomy' => 'category',
+				'field'    => 'slug',
+				'terms'    => $cat->slug
+			),
+			array(
+				'taxonomy' => 'post_format',
+				'field'    => 'slug',
+				'terms'    => 'post-format-gallery'
+			)
+		)
+	);
+
+	return $args;
 }
 
 /**
  * Displays the galleries from one category
  *
- * @param $cat, $exclude_id ,$number_of_galleries, $heading, $title, $show_child_category_hierarchy
+ * @param $cat , $exclude_id ,$number_of_galleries, $heading, $title, $show_child_category_hierarchy
  *
  * @return string Formatted output in HTML
  */
-function bornholm_get_galleries_from_category ( $cat, $exclude_id, $number_of_galleries, $heading, $title, $show_child_category_hierarchy ) {
-    $galleries_args = bornholm_galleries_args( $cat, $exclude_id );
-    $galleries      = get_posts( $galleries_args );
-    if ( $galleries ) {
-        $total_galleries = count( $galleries );
-        $gallery_counter = 0; ?>
-        <div class="gallery-category clearfix">
-            <?php if ( $title != '' ) { ?>
-                <<?php echo $heading; ?> class="category-title"><?php echo $title; ?></<?php echo $heading; ?>>
-            <?php } ?>
-            <?php bornholm_loop_galleries_from_category( $galleries, $total_galleries, $number_of_galleries, $gallery_counter, $cat );
-            if ( $show_child_category_hierarchy ) {
-                bornholm_get_child_category_galleries( $cat, $number_of_galleries, $exclude_id, $title, $heading );
-            }?>
-        </div>
-    <?php }
+function bornholm_get_galleries_from_category( $cat, $exclude_id, $number_of_galleries, $heading, $title, $show_child_category_hierarchy ) {
+	$galleries_args = bornholm_galleries_args( $cat, $exclude_id );
+	$galleries      = get_posts( $galleries_args );
+	if ( $galleries ) {
+		$total_galleries = count( $galleries );
+		$gallery_counter = 0; ?>
+		<div class="gallery-category clearfix">
+		<?php if ( $title != '' ) { ?>
+			<<?php echo $heading; ?> class="category-title"><?php echo $title; ?></<?php echo $heading; ?>>
+		<?php } ?>
+		<?php bornholm_loop_galleries_from_category( $galleries, $total_galleries, $number_of_galleries, $gallery_counter, $cat );
+		if ( $show_child_category_hierarchy ) {
+			bornholm_get_child_category_galleries( $cat, $number_of_galleries, $exclude_id, $title, $heading );
+		} ?>
+		</div>
+	<?php }
 }
 
 /**
  * Loops through the child galleries and calls the functions to display them
  *
- * @param $cat, $number_of_galleries
+ * @param $cat , $number_of_galleries
  *
  * @return string Formatted output in HTML
  */
@@ -499,11 +580,11 @@ function bornholm_get_child_category_galleries( $cat, $number_of_galleries, $exc
 				$total_child_galleries = count( $child_galleries );
 				$gallery_child_counter = 0; ?>
 				<div class="gallery-category child">
-					<?php if ( $title != '' ) {
-						$title = $cat_child->name; ?>
-						<<?php echo $heading; ?>><?php echo $title; ?></<?php echo $heading; ?>>
-					<?php }
-					bornholm_loop_galleries_from_category( $child_galleries, $total_child_galleries, $number_of_galleries, $gallery_child_counter, $cat_child ); ?>
+				<?php if ( $title != '' ) {
+					$title = $cat_child->name; ?>
+					<<?php echo $heading; ?>><?php echo $title; ?></<?php echo $heading; ?>>
+				<?php }
+				bornholm_loop_galleries_from_category( $child_galleries, $total_child_galleries, $number_of_galleries, $gallery_child_counter, $cat_child ); ?>
 				</div>
 			<?php }
 		}
@@ -514,23 +595,23 @@ function bornholm_get_child_category_galleries( $cat, $number_of_galleries, $exc
  * Loops through the galleries of the given category and calls the functions for displaying the teaser
  * of the galleries and the “Display all” link
  *
- * @param $galleries, $total_galleries, $number_of_galleries, $gallery_counter, $cat
+ * @param $galleries , $total_galleries, $number_of_galleries, $gallery_counter, $cat
  *
  * @return string Formatted output in HTML
  */
 function bornholm_loop_galleries_from_category( $galleries, $total_galleries, $number_of_galleries, $gallery_counter, $cat ) {
-    foreach ( $galleries as $post ) {
-        if ( $number_of_galleries > 0 ) {
-            if ( $total_galleries > $number_of_galleries ) {
-                $gallery_counter ++;
-                if ( $gallery_counter > $number_of_galleries ) {
-                    bornholm_alternative_front_page_more_link( $cat );
-                    break;
-                }
-            }
-        }
-        bornholm_alternative_front_page_gallery_teaser( $post );
-    }
+	foreach ( $galleries as $post ) {
+		if ( $number_of_galleries > 0 ) {
+			if ( $total_galleries > $number_of_galleries ) {
+				$gallery_counter ++;
+				if ( $gallery_counter > $number_of_galleries ) {
+					bornholm_alternative_front_page_more_link( $cat );
+					break;
+				}
+			}
+		}
+		bornholm_alternative_front_page_gallery_teaser( $post );
+	}
 }
 
 /**
@@ -639,7 +720,7 @@ function bornholm_comment( $comment, $args, $depth ) {
 			// Display trackbacks differently than normal comments.
 			?>
 			<li <?php comment_class(); ?> id="comment-<?php comment_ID(); ?>">
-			<p><?php _e( 'Trackback:', 'bornholm' ); ?> <?php esc_url( comment_author_link() ); ?><?php esc_url( edit_comment_link( __( '(Edit)', 'bornholm' ), '<span class="edit-link">', '</span>' ) ); ?></p>
+			<p><?php _e( 'Trackback:', 'bornholm' ); ?><?php esc_url( comment_author_link() ); ?><?php esc_url( edit_comment_link( __( '(Edit)', 'bornholm' ), '<span class="edit-link">', '</span>' ) ); ?></p>
 			<?php
 			break;
 		default :
@@ -746,6 +827,7 @@ function register_bornholm_widgets() {
 	register_widget( 'Bornholm_Recent_Galleries' );
 	register_widget( 'Bornholm_Featured_Galleries' );
 }
+
 add_action( 'widgets_init', 'register_bornholm_widgets' );
 
 require get_template_directory() . '/inc/customizer.php';
