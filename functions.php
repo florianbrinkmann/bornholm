@@ -937,6 +937,27 @@ AND comment_post_ID = %d AND comment_approved = %d", ' ', $the_post_id, 1 ) );
 	}
 }
 
+/**
+ * Add classes to the body, if needed
+ *
+ * @param string $classes empty default string.
+ *
+ * @return string
+ */
+function bornholm_filter_body_classes( $classes ) {
+	/**
+	 * Add no-sidebar class if we have no sidebar.
+	 */
+	if ( ! is_active_sidebar( 'sidebar-1' ) ) {
+		$classes[] .= 'no-sidebar';
+	} else {
+	}
+
+	return $classes;
+}
+
+add_filter( 'body_class', 'bornholm_filter_body_classes' );
+
 require get_template_directory() . '/inc/class-recent-galleries.php';
 
 require get_template_directory() . '/inc/class-featured-galleries.php';

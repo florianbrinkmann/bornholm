@@ -857,6 +857,12 @@ Gallery
     line-height: 1;
 }
 
+.gallery::after {
+    clear: both;
+    content: '';
+    display: block;
+}
+
 .gallery-item {
     display: block;
     float: left;
@@ -1408,6 +1414,12 @@ Lightbox
         clear: both;
         float: left;
         width: 60%;
+    }
+
+    .no-sidebar main {
+        float: none;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .entry-title,
