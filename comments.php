@@ -26,9 +26,9 @@ if ( post_password_required() ) {
 				<?php wp_list_comments( array( 'callback' => 'bornholm_comment', 'type' => 'pings' ) ); ?>
 			</ol>
 		<?php }
-		if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) { ?>
+		if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) { // are there comments to navigate through ?>
 			<nav id="comment-nav-below" class="navigation" role="navigation">
-				<h2 class="screen-reader-text"><?php _e( 'Comment navigation', 'bornholm' ); ?></h2>
+				<h1 class="screen-reader-text"><?php _e( 'Comment navigation', 'bornholm' ); ?></h1>
 
 				<div
 					class="nav-previous"><?php previous_comments_link( __( '&larr; Older Comments', 'bornholm' ) ); ?></div>

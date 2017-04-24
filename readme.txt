@@ -1,6 +1,14 @@
 Changelog:
 ||||||||||||
 
+Version 1.0.13 – 30.05.2016
+---
+- removed deprecated theme tags from style.css
+- removed unnecessary defaults from bornholm_customize_register()
+
+
+
+
 Version 1.0.12 – 13.12.2015
 ---
 - removed height: auto for iframes and embeds
