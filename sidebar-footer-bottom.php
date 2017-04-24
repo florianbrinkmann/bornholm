@@ -12,5 +12,5 @@ if ( is_active_sidebar( 'footer-widget-area-bottom' ) ) { ?>
 	<?php
 }
 ?>
-<p class="theme-author"><?php _e( 'Theme: Bornholm by <a rel="nofollow" href="http://florianbrinkmann.de">Florian Brinkmann</a>', 'bornholm' ) ?></p>
+<p class="theme-author"><?php _e( 'Theme: Bornholm by <a rel="nofollow" href="http://florianbrinkmann.com/en/">Florian Brinkmann</a>', 'bornholm' ) ?></p>
 </footer>
