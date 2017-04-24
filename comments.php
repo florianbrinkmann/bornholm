@@ -1,4 +1,11 @@
 <?php
+/**
+ * Comments template.
+ *
+ * @package Bornholm
+ */
+
+
 if ( post_password_required() ) {
 	return;
 } ?>

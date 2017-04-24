@@ -1,4 +1,11 @@
-<?php get_header(); ?>
+<?php
+/**
+ * Template for single posts.
+ *
+ * @package Bornholm
+ */
+
+get_header(); ?>
 	<main role="main">
 		<?php
 		while ( have_posts() ) {

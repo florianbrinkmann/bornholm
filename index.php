@@ -1,4 +1,11 @@
-<?php get_header(); ?>
+<?php
+/**
+ * Main template file.
+ *
+ * @package Bornholm
+ */
+
+get_header(); ?>
 	<main role="main">
 		<?php if ( have_posts() ) {
 			while ( have_posts() ) {

@@ -1,4 +1,11 @@
-<?php get_header(); ?>
+<?php
+/**
+ * Archive template.
+ *
+ * @package Bornholm
+ */
+
+get_header(); ?>
 	<main role="main">
 		<?php if ( have_posts() ) { ?>
 			<header class="archive-header">

@@ -1,3 +1,11 @@
+<?php
+/**
+ * Template for displaying visible and invisible header.
+ *
+ * @package Bornholm
+ */
+
+?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?> class="no-js">
 <head>

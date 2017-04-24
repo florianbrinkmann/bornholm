@@ -2,7 +2,10 @@
 /**
  * Template Name: Alternative front page
  * Description: A Page Template for the alternative front page. It displays a brief overview of the portfolio.
+ *
+ * @package Bornholm
  */
+
 get_header(); ?>
 	<main role="main">
 		<?php

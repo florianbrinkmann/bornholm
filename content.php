@@ -1,3 +1,11 @@
+<?php
+/**
+ * Template part for displaying content of normal posts.
+ *
+ * @package Bornholm
+ */
+
+?>
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<header class="entry-header">
 		<?php bornholm_the_post_header( 'h1', $post ); ?>

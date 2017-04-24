@@ -1,5 +1,11 @@
 <?php
 /**
+ * Customizer functions.
+ *
+ * @package Bornholm
+ */
+
+/**
  * Creates the settings, controls and sections for the customizer
  *
  * @param $wp_customize

@@ -1,4 +1,11 @@
-<?php get_header(); ?>
+<?php
+/**
+ * 404 error template.
+ *
+ * @package Bornholm
+ */
+
+get_header(); ?>
 	<main role="main">
 		<article id="post-0" class="post no-results not-found">
 			<header class="entry-header">

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Template part for displaying the footer bottom sidebar.
+ *
+ * @package Bornholm
+ */
+
 if ( is_active_sidebar( 'footer-widget-area-bottom' ) ) { ?>
 	<aside id="footer-bottom" class="clearfix">
 		<?php dynamic_sidebar( 'footer-widget-area-bottom' ); ?>

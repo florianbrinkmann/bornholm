@@ -1,8 +1,13 @@
 <?php
 /**
+ * Template for displaying the galleries in a portfolio view.
+ *
  * Template Name: Portfolio page
  * Description: Displays all galleries.
+ *
+ * @package Bornholm
  */
+
 get_header(); ?>
 	<main role="main">
 		<?php $galleries_on_portfolio_page = get_theme_mod( 'galleries_on_portfolio_page' );

@@ -1,3 +1,11 @@
+<?php
+/**
+ * Displays sidebar on galleries.
+ *
+ * @package Bornholm
+ */
+
+?>
 <aside id="sidebar-gallery" role="sidebar" class="clearfix">
 	<div id="sidebar-content">
 		<?php $number_of_galleries = get_theme_mod( 'number_of_galleries_from_same_category_on_single_gallery_page', 3 );

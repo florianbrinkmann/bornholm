@@ -1,4 +1,10 @@
 <?php
+/**
+ * Class for featured galleries widget.
+ *
+ * @package Bornholm
+ */
+
 
 /**
  * Featured_Galleries widget class

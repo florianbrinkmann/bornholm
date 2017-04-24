@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class for recent galleries widget.
+ *
+ * @package Bornholm
+ */
 
 /**
  * Recent_Galleries widget class
