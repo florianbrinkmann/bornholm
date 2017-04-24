@@ -1,6 +1,21 @@
 Changelog:
 ||||||||||||
 
+Version 1.1.0 – 24.04.2017
+---
+Added:
+- Elements with size-full class can go beyond the content area if no sidebar is active.
+
+Changed:
+- Set max width to 1334 px instead of 1600px
+- Doc improvements.
+- Removed update of image sizes.
+- Content is centered if no widgets in sidebar.
+- Switched to florianbrinkmann.com URL in style.css and footer credits link.
+
+
+
+
 Version 1.0.13 – 30.05.2016
 ---
 - removed deprecated theme tags from style.css
