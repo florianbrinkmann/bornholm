@@ -20,12 +20,11 @@ if ( ! isset( $content_width ) ) {
 	$content_width = 800;
 }
 
-update_option( 'thumbnail_size_w', 9999 );
-update_option( 'thumbnail_size_h', 200 );
-update_option( 'thumbnail_crop', 0 );
-update_option( 'large_size_w', 800 );
+/**
+ * Add two new images sizes.
+ */
 add_image_size( 'bornholm_large_gallery_image_for_blog_view', 951, 9999, false );
-add_image_size( 'bornholm_large_gallery_image_for_single_view', 1592, 9999, false );
+add_image_size( 'bornholm_large_gallery_image_for_single_view', 1334, 9999, false );
 
 /**
  * Check if we are on the login page
