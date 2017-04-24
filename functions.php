@@ -89,6 +89,9 @@ add_action( 'init', 'bornholm_menus' );
  * Registers the sidebar
  */
 function bornholm_sidebars() {
+	/**
+	 * Register the main sidebar.
+	 */
 	register_sidebar( array(
 		'name'          => 'Sidebar',
 		'id'            => 'sidebar-1',
@@ -98,6 +101,10 @@ function bornholm_sidebars() {
 		'before_title'  => '<h3 class="widget-title">',
 		'after_title'   => '</h3>'
 	) );
+
+	/**
+	 * Register the sidebar that is visible on single view of gallery posts.
+	 */
 	register_sidebar( array(
 		'name'          => __( 'Gallery Sidebar', 'bornholm' ),
 		'id'            => 'sidebar-gallery',
@@ -107,6 +114,10 @@ function bornholm_sidebars() {
 		'before_title'  => '<h3 class="widget-title">',
 		'after_title'   => '</h3>'
 	) );
+
+	/**
+	 * Register the sidebar that is displayed in the top area of the footer.
+	 */
 	register_sidebar( array(
 		'name'          => __( 'Footer Widget Area (top)', 'bornholm' ),
 		'id'            => 'footer-widget-area-top',
@@ -116,6 +127,10 @@ function bornholm_sidebars() {
 		'before_title'  => '<h3 class="widget-title">',
 		'after_title'   => '</h3>'
 	) );
+
+	/**
+	 * Register the sidebar that is displayed below the top footer sidebar.
+	 */
 	register_sidebar( array(
 		'name'          => __( 'Footer Widget Area (bottom)', 'bornholm' ),
 		'id'            => 'footer-widget-area-bottom',
@@ -132,7 +147,7 @@ add_action( 'widgets_init', 'bornholm_sidebars' );
 /**
  * Displays navigation for paginated posts
  *
- * @return string Formatted output in HTML.
+ * @return void Formatted output in HTML.
  */
 function bornholm_paginated_posts_navigation() {
 	wp_link_pages( array(
@@ -146,7 +161,7 @@ function bornholm_paginated_posts_navigation() {
 /**
  * Displays the content with customized more link
  *
- * @return string Formatted output in HTML
+ * @return void Formatted output in HTML
  */
 function bornholm_the_content() {
 	$text = _x( 'Continue reading “%s”', 's = post title', 'bornholm' );
@@ -157,9 +172,9 @@ function bornholm_the_content() {
 /**
  * Removes the page jump after clicking on a read more link
  *
- * @param $link
+ * @param string $link The read more link.
  *
- * @return mixed
+ * @return string
  */
 function bornholm_remove_more_link_scroll( $link ) {
 	$link = preg_replace( '|#more-[0-9]+|', '', $link );
@@ -173,7 +188,7 @@ add_filter( 'the_content_more_link', 'bornholm_remove_more_link_scroll' );
  * Adds the scripts and styles to the header
  */
 function bornholm_scripts_styles() {
-	/*
+	/**
 	 * Adds JavaScript to pages with the comment form to support
 	 * sites with threaded comments (when in use).
 	 */
@@ -181,15 +196,24 @@ function bornholm_scripts_styles() {
 		wp_enqueue_script( 'comment-reply' );
 	}
 
-
+	/**
+	 * Include the menu script.
+	 */
 	wp_enqueue_script( 'bornholm-menu', get_template_directory_uri() . '/js/menu.js', array( 'jquery' ), false, true );
+
+	/**
+	 * Include the lightbox script.
+	 */
 	wp_enqueue_script( 'bornholm-lightbox', get_template_directory_uri() . '/js/lightbox.js', array( 'jquery' ), false, true );
 
-	/*
-	 * Loads our main stylesheet.
+	/**
+	 * Include the stylesheet.
 	 */
 	wp_enqueue_style( 'bornholm-style', get_template_directory_uri() . '/css/bornholm.css', array(), null );
 
+	/**
+	 * Load the fonts.
+	 */
 	wp_enqueue_style( 'bornholm-fonts', '//fonts.googleapis.com/css?family=Roboto:300,300italic,500,500italic', array(), null );
 }
 
@@ -198,31 +222,65 @@ add_action( 'wp_enqueue_scripts', 'bornholm_scripts_styles' );
 /**
  * Fetch image post objects for all gallery images in a post.
  *
- * @param $post_id
+ * @param int $post_id ID of the post.
  *
  * @return array
  */
 function bornholm_get_gallery_images( $post_id ) {
-
+	/**
+	 * Get the post data.
+	 */
 	$post = get_post( $post_id );
 
-	// Den Beitrag gibt es nicht, oder er ist leer.
+	/**
+	 * Check if we do not have a post or the post content is empty.
+	 */
 	if ( ! $post || empty ( $post->post_content ) ) {
 		return array();
 	}
 
+	/**
+	 * Get the post galleries as an array.
+	 */
 	$galleries = get_post_galleries( $post, false );
+
+	/**
+	 * Check if we have galleries, otherwise return an empty array.
+	 */
 	if ( empty ( $galleries ) ) {
 		return array();
 	}
+
+	/**
+	 * Create empty IDs array.
+	 */
 	$ids = array();
+
+	/**
+	 * Loop the galleries.
+	 */
 	foreach ( $galleries as $gallery ) {
+		/**
+		 * Insert IDs of gallery images into $ids.
+		 */
 		if ( ! empty ( $gallery['ids'] ) ) {
 			$ids = array_merge( $ids, explode( ',', $gallery['ids'] ) );
 		}
 	}
+
+	/**
+	 * Remove IDs of multiple used images.
+	 */
 	$ids = array_unique( $ids );
+
+	/**
+	 * Check if $ids is empty, so we do not have any gallery images (possible if [gallery] is used
+	 * without ids argument.
+	 */
 	if ( empty ( $ids ) ) {
+		/**
+		 * Get the images that are uploaded to the post.
+		 */
 		$attachments = get_children( array(
 			'post_parent'    => $post_id,
 			'post_status'    => 'inherit',
@@ -231,11 +289,18 @@ function bornholm_get_gallery_images( $post_id ) {
 			'order'          => 'ASC',
 			'orderby'        => 'menu_order',
 		) );
+
+		/**
+		 * Return empty array, if we do not have any attachments.
+		 */
 		if ( empty ( $attachments ) ) {
 			return array();
 		}
 	}
 
+	/**
+	 * Get the post data of the gallery images.
+	 */
 	$images = get_posts(
 		array(
 			'post_type'      => 'attachment',
@@ -245,6 +310,11 @@ function bornholm_get_gallery_images( $post_id ) {
 			'include'        => $ids
 		)
 	);
+
+	/**
+	 * Check if $images and $attachments is empty and return empty array.
+	 * If only $images is empty, set $images to the value of $attachments.
+	 */
 	if ( ! $images && ! $attachments ) {
 		return array();
 	} elseif ( ! $images ) {
@@ -257,19 +327,34 @@ function bornholm_get_gallery_images( $post_id ) {
 /**
  * Displays the header for normal posts
  *
- * @param $heading
+ * @param string $heading Heading level.
+ * @param object $post    Post object.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_the_post_header( $heading, $post ) {
+	/**
+	 * Check if we have a post thumbnail.
+	 */
 	if ( has_post_thumbnail() ) {
+		/**
+		 * Link the title if we are not on single view.
+		 */
 		if ( ! is_single() ) { ?>
 			<a href="<?php esc_url( the_permalink() ); ?>">
 		<?php }
 
+		/**
+		 * Display the post title with the handed over level.
+		 */
 		echo '<' . $heading . ' class="entry-title">';
 		the_title();
-		echo '</' . $heading . '>'; ?>
+		echo '</' . $heading . '>';
+
+		/**
+		 * Display the post thumbnail
+		 */
+		?>
 		<figure class="featured-image">
 			<?php the_post_thumbnail(); ?>
 		</figure>
@@ -277,6 +362,9 @@ function bornholm_the_post_header( $heading, $post ) {
 			</a>
 		<?php }
 	} else {
+		/**
+		 * Display the title.
+		 */
 		bornholm_post_title( $heading, $post );
 	}
 }
@@ -284,9 +372,10 @@ function bornholm_the_post_header( $heading, $post ) {
 /**
  * Displays the post title
  *
- * @param $heading
+ * @param string $heading Heading level.
+ * @param object $post    Post object.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_post_title( $heading, $post ) {
 	echo '<' . $heading . ' class="entry-title">';
@@ -305,9 +394,12 @@ function bornholm_post_title( $heading, $post ) {
  * If there are $images, the function displays the title with an image.
  * If not, only the title is displayed.
  *
- * @param $heading , $images, $size
+ * @param string $heading Level of heading.
+ * @param array  $images  Array of gallery images.
+ * @param string $size    Image size.
+ * @param object $post    Post object.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_gallery_header( $heading, $images, $size, $post ) {
 	if ( $images ) {
@@ -320,9 +412,12 @@ function bornholm_gallery_header( $heading, $images, $size, $post ) {
 /**
  * Displays the title of a gallery with an image.
  *
- * @param $heading , $images, $size
+ * @param string $heading Heading level.
+ * @param array  $images  Gallery images.
+ * @param string $size    Image size.
+ * @param object $post    Post object.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_gallery_title( $heading, $images, $size, $post ) {
 	if ( $size != 'bornholm_large_gallery_image_for_single_view' ) { ?>
@@ -342,9 +437,11 @@ function bornholm_gallery_title( $heading, $images, $size, $post ) {
 /**
  * Displays the featured image of a gallery
  *
- * @param $size , $images
+ * @param string $size   Image size.
+ * @param array  $images Gallery images.
+ * @param object $post   Post object.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_gallery_featured_image( $size, $images, $post ) {
 	$image         = array_shift( $images );
@@ -362,9 +459,11 @@ function bornholm_gallery_featured_image( $size, $images, $post ) {
 /**
  * Displays the first images of a gallery
  *
- * @param $size , $images, $number_of_small_images
+ * @param string $size                   Image size.
+ * @param array  $images                 Gallery images.
+ * @param int    $number_of_small_images Number of small images.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_small_gallery_thumbnails( $size, $images, $number_of_small_images ) {
 	global $post;
@@ -382,9 +481,13 @@ function bornholm_small_gallery_thumbnails( $size, $images, $number_of_small_ima
  * Displays the first images from the gallery when a post thumbnail is set without displaying the
  * thumbnail for a second time
  *
- * @param $post , $small_images, $counter, $size, $number_of_small_images
+ * @param object $post                   Post object.
+ * @param array  $small_images           Array of small images.
+ * @param int    $counter                Counter int.
+ * @param string $size                   Image size.
+ * @param int    $number_of_small_images Number of small images to display.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_thumbnails_from_gallery_with_post_thumbnail( $post, $small_images, $counter, $size, $number_of_small_images ) {
 	$post_thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ) );
@@ -407,9 +510,12 @@ function bornholm_thumbnails_from_gallery_with_post_thumbnail( $post, $small_ima
 /**
  * Displays the first images from the gallery
  *
- * @param $small_images , $counter, $size, $number_of_small_images
+ * @param array  $small_images           Small images.
+ * @param int    $counter                Counter.
+ * @param string $size                   Image size.
+ * @param int    $number_of_small_images Number of small images.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_thumbnails_from_gallery_without_post_thumbnail( $small_images, $counter, $size, $number_of_small_images ) {
 	$image_list = '<ul class="gallery-thumbs clearfix">';
@@ -431,9 +537,9 @@ function bornholm_thumbnails_from_gallery_without_post_thumbnail( $small_images,
 /**
  * Displays the number of gallery images
  *
- * @param $images
+ * @param array $images Gallery images.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_gallery_image_number( $images ) {
 	if ( $images ) {
@@ -455,9 +561,9 @@ function bornholm_gallery_image_number( $images ) {
 /**
  * Displays the “Display all” link, if there are too many galleries in one category
  *
- * @param $cat
+ * @param object $cat Category object.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_alternative_front_page_more_link( $cat ) {
 	$text = _x( 'Display all galleries from “%s”', 's = category title', 'bornholm' );
@@ -470,7 +576,9 @@ function bornholm_alternative_front_page_more_link( $cat ) {
 /**
  * Displays a thumbnail from a gallery
  *
- * @param $post
+ * @param object $post Post object.
+ *
+ * @return void
  */
 function bornholm_alternative_front_page_gallery_teaser( $post ) { ?>
 	<article>
@@ -493,7 +601,7 @@ function bornholm_alternative_front_page_gallery_teaser( $post ) { ?>
 /**
  * Returns a comma seperated string of category ids of the given post
  *
- * @param $post_id
+ * @param int $post_id Post ID.
  *
  * @return string
  */
@@ -515,14 +623,15 @@ function bornholm_get_the_category_ids( $post_id ) {
 /**
  * Returns array with galleries (post format gallery) from given category
  *
- * @param $cat , $exclude_id
+ * @param object $cat        Category object.
+ * @param string $exclude_id Comma seperated ids
  *
  * @return array
  */
 function bornholm_galleries_args( $cat, $exclude_id ) {
 	$args = array(
 		'category__in' => $cat->cat_ID,
-		'exclude'      => "$exclude_id", // for the sidebar on a single gallery
+		'exclude'      => "$exclude_id",
 		'tax_query'    => array(
 			'relation' => 'AND',
 			array(
@@ -544,9 +653,14 @@ function bornholm_galleries_args( $cat, $exclude_id ) {
 /**
  * Displays the galleries from one category
  *
- * @param $cat , $exclude_id ,$number_of_galleries, $heading, $title, $show_child_category_hierarchy
+ * @param object  $cat                           Category object.
+ * @param string  $exclude_id                    Comma sepearted list of category IDs.
+ * @param int     $number_of_galleries           Number of galleries to show.
+ * @param string  $heading                       Heading level.
+ * @param string  $title                         Category title.
+ * @param boolean $show_child_category_hierarchy If the galleries should be displayed hierarchical.
  *
- * @return string Formatted output in HTML
+ * @return void
  */
 function bornholm_get_galleries_from_category( $cat, $exclude_id, $number_of_galleries, $heading, $title, $show_child_category_hierarchy ) {
 	$galleries_args = bornholm_galleries_args( $cat, $exclude_id );
@@ -569,9 +683,10 @@ function bornholm_get_galleries_from_category( $cat, $exclude_id, $number_of_gal
 /**
  * Loops through the child galleries and calls the functions to display them
  *
- * @param $cat , $number_of_galleries
+ * @param object $cat                 Category object.
+ * @param int    $number_of_galleries Number of galleries.
  *
- * @return string Formatted output in HTML
+ * @return void.
  */
 function bornholm_get_child_category_galleries( $cat, $number_of_galleries, $exclude_id, $title, $heading ) {
 	$category_children = get_term_children( $cat->term_id, 'category' );
