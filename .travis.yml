@@ -1,0 +1,10 @@
+deploy:
+  - provider: script
+    script: scripts/deploy-staging.sh
+    on:
+      branch: staging
+
+  - provider: script
+    script: scripts/deploy-production.sh
+    on:
+      branch: master
