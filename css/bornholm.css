@@ -744,6 +744,20 @@ Post
     margin-right: auto;
 }
 
+.no-sidebar .entry-content {
+    max-width: 100%;
+}
+
+.no-sidebar .entry-content > * {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.no-sidebar .entry-content > .size-full {
+    max-width: 100%;
+}
+
 .entry-title,
 .archive-header,
 .entry-content,
@@ -1420,6 +1434,7 @@ Lightbox
         float: none;
         margin-left: auto;
         margin-right: auto;
+        width: auto;
     }
 
     .entry-title,
