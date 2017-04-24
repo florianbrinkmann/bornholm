@@ -559,7 +559,7 @@ input[type=submit] {
 #wrapper,
 #header,
 #footer {
-    max-width: 1600px;
+    max-width: 1334px;
     margin: 0 auto;
 }
 
