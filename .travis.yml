@@ -1,8 +1,8 @@
 language: php
 addons:
   ssh_known_hosts:
-  - "$STAGING_SERVER"
-  - "$PRODUCTION_SERVER"
+  - $STAGING_SERVER
+  - $PRODUCTION_SERVER
 script:
   -
 before_deploy:
