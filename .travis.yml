@@ -1,3 +1,5 @@
+language: php
+
 addons:
   ssh_known_hosts:
   - "$STAGING_SERVER"
@@ -10,22 +12,13 @@ before_deploy:
   - ssh-add /tmp/deploy_rsa
 
 deploy:
-- provider: script
-  skip_cleanup: true
-  script:
-    - ssh -p22 $STAGING_SERVER_USER@$STAGING_SERVER "mkdir -p $STAGING_PATH_STABLE"
-    - ssh -p22 $STAGING_SERVER_USER@$STAGING_SERVER "mkdir -p $STAGING_PATH_TRUNK"
-    - rsync -rav -e ssh --exclude='.git/' --exclude=scripts/ --exclude='.travis.yml' --delete-excluded ./ $STAGING_SERVER_USER@$STAGING_SERVER:$STAGING_PATH_TRUNK
-    - rsync -rav -e ssh --exclude='.git/' --exclude=scripts/ --exclude='.travis.yml' --delete-excluded ./ $STAGING_SERVER_USER@$STAGING_SERVER:$STAGING_PATH_STABLE
-  on:
-    branch: staging
-- provider: script
-  skip_cleanup: true
-  script:
-    - ssh -p22 $PRODUCTION_SERVER_USER@$PRODUCTION_SERVER "mkdir -p $PRODUCTION_SERVER_THEMES_PATH/_tmp-bornholm"
-    - ssh -p22 $PRODUCTION_SERVER_USER@$PRODUCTION_SERVER "mkdir -p $PRODUCTION_SERVER_THEMES_PATH/bornholm"
-    - rsync -rav -e ssh --exclude='.git/' --exclude=scripts/ --exclude='.travis.yml' --delete-excluded ./ $PRODUCTION_SERVER_USER@$PRODUCTION_SERVER:$PRODUCTION_SERVER_THEMES_PATH/_tmp-bornholm
-    - ssh -p22 $PRODUCTION_SERVER_USER@$PRODUCTION_SERVER "mv $PRODUCTION_SERVER_THEMES_PATH/bornholm $PRODUCTION_SERVER_THEMES_PATH/_old-bornholm && mv $PRODUCTION_SERVER_THEMES_PATH/_tmp-bornholm $PRODUCTION_SERVER_THEMES_PATH/bornholm"
-    - ssh -p22 $PRODUCTION_SERVER_USER@$PRODUCTION_SERVER "rm -rf $PRODUCTION_SERVER_THEMES_PATH/_old-bornholm"
-  on:
-    branch: master
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-staging.sh
+    on:
+      branch: staging
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-production.sh
+    on:
+      branch: master
