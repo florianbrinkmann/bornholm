@@ -5,6 +5,9 @@ addons:
   - "$STAGING_SERVER"
   - "$PRODUCTION_SERVER"
 
+script:
+  -
+
 before_deploy:
   - openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in deploy_rsa.enc -out /tmp/deploy_rsa -d
   - eval "$(ssh-agent -s)"
