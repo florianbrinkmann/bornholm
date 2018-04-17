@@ -21,6 +21,7 @@ Bornholm is great for your photoblog or portfolio website. The theme comes with 
 **Changed**
 
 * Ship Roboto font files to load it locally instead of loading it from Google.
+* Do not overwrite `$GLOBALS['comment']` in `functions.php`.
 
 
 ### 1.1.0 – 24.04.2017 
