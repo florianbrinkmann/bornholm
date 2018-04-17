@@ -210,11 +210,6 @@ function bornholm_scripts_styles() {
 	 * Include the stylesheet.
 	 */
 	wp_enqueue_style( 'bornholm-style', get_template_directory_uri() . '/css/bornholm.css', array(), null );
-
-	/**
-	 * Load the fonts.
-	 */
-	wp_enqueue_style( 'bornholm-fonts', '//fonts.googleapis.com/css?family=Roboto:300,300italic,500,500italic', array(), null );
 }
 
 add_action( 'wp_enqueue_scripts', 'bornholm_scripts_styles' );
