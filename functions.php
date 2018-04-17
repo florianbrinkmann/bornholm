@@ -827,7 +827,6 @@ function bornholm_show_seperator( $show_sep ) {
  * Used as a callback by wp_list_comments() for displaying the comments.
  */
 function bornholm_comment( $comment, $args, $depth ) {
-	$GLOBALS['comment'] = $comment;
 	switch ( $comment->comment_type ) :
 		case 'pingback' :
 		case 'trackback' :
