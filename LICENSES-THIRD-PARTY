@@ -3,6 +3,7 @@ Third-party resources bundled with Bornholm:
 Roboto Font, Copyright Google
 License: Apache License 2.0
 Source: https://github.com/google/roboto
+The font files were subsetted via https://github.com/filamentgroup/glyphhanger
 
 ImageLightbox.js, Copyright Osvaldas Valutis
 License: MIT License
