@@ -1,9 +1,9 @@
 # Bornholm 
 **Contributors:** FlorianBrinkmann  
 **Requires at least:** 4.5  
-**Tested up to:** 4.9.5  
+**Tested up to:** 4.9.6  
 **Requires PHP:** 5.3  
-Version 1.1.1
+Version 1.1.2
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -14,6 +14,13 @@ Bornholm is great for your photoblog or portfolio website. The theme comes with 
 
 
 ## Changelog 
+
+
+### 1.1.2 – 14.05.2018 
+
+**Fixed**
+
+* Styling of new comment cookie checkbox.
 
 
 ### 1.1.1 – 17.04.2018 
