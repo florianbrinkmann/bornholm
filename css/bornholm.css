@@ -1182,6 +1182,19 @@ Comments
   display: block;
 }
 
+#comments .comment-form-cookies-consent {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+}
+
+#comments .comment-form-cookies-consent label {
+  margin-left: .5em;
+}
+
 .commentlist {
   padding-left: 0;
 }
